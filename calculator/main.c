@@ -5,32 +5,38 @@
 
 int find_operator(const char *arr){
 	const char operators[] = "+-/*";
-
 	for (int i = 0; arr[i] != '\0'; i++) {
 		for (int j = 0; operators[j] != '\0'; j++ ){
 			if(arr[i] == operators[j]) {
+				printf("operator  %c\n", arr[i]);
 				return i;
 			}
 		}
 	}
 
-	return '\0';
+	return -1;
 }
 
-void handle_calculation(char operator, int input1, int input2) {
+int add(int input1, int input2) {
+	printf("%d, %d\n", input1,input2);
+	return input1 + input2;
+}
+
+int handle_calculation(char operator, int input1, int input2) {
 	switch(operator) {
-		case '+':
-			add(input1, input2);
+		case '+': {
+			int result = add(input1, input2);
+			return result;
 			break;
+		}		
 		default:
 			printf("No implementation for operator yet");
+			return 0;
 	}
 
 }
 
-int add(int input1, int input2) {
-	return input1 + input2;
-}
+
 
 int main(int argc, char *argv[]){
 
@@ -63,9 +69,33 @@ int main(int argc, char *argv[]){
 
 	}
 
-	for (int i = 0; i < n; i++) {
-        printf("%s\n", arr[i]);
+	char input[256] = ""; // Buffer to hold the concatenated string
+    for (int i = 0; i < n; i++) {
+        strcat(input, arr[i]);
+        // if (i < n - 1) {
+        //     strcat(input, " "); // Add space between arguments
+        // }
     }
+	printf("%s\n", input);
+
+	int index = find_operator(input);
+    
+    if (index != -1) {
+        printf("Index of operator: %d\n", index);
+		int input1 = input[index-1] - '0';
+		int input2 = input[index+1] - '0';
+
+		int result = handle_calculation(input[index], input1 ,input2);
+		printf("Result: %d\n", result);
+    } else {
+        printf("No operator found in the input.\n");
+    }
+
+
+
+	// for (int i = 0; i < n; i++) {
+    //     printf("%s\n", arr[i]);
+    // }
 
 
 	// printf("Array elements: ")
