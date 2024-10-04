@@ -24,10 +24,46 @@ int add(int input1, int input2) {
 	return input1 + input2;
 }
 
+int sub(int input1, int input2) {
+	printf("%d, %d\n", input1,input2);
+	return input1 - input2;
+}
+
+int divide(int input1, int input2) {
+	printf("%d, %d\n", input1,input2);
+ 	if (input1 == 0 || input2 == 0) {
+        fprintf(stderr, "Error: Cannot divide with 0.\n");
+        return 1;
+    }
+
+	return input1 / input2;
+}
+
+int multiply(int input1, int input2) {
+	printf("%d, %d\n", input1,input2);
+
+	return input1 * input2;
+}
+
 int handle_calculation(char operator, int input1, int input2) {
 	switch(operator) {
 		case '+': {
 			int result = add(input1, input2);
+			return result;
+			break; 
+		}	
+		case '-': {
+			int result = sub(input1, input2);
+			return result;
+			break; 
+		}	
+		case '/': {
+			int result = divide(input1, input2);
+			return result;
+			break; 
+		}	
+		case '*': {
+			int result = multiply(input1, input2);
 			return result;
 			break; 
 		}		
@@ -108,8 +144,6 @@ int main(int argc, char *argv[]){
     
     if (index != -1) {
 		int input_size = strlen(result);
-		printf("index %d\n", index);
-		printf("size %d\n", input_size);
 		int size_before = index;
 		int size_after =  input_size - index - 1;
 
@@ -133,21 +167,16 @@ int main(int argc, char *argv[]){
 			 after_arr[i - index - 1 + 1] = '\0';  // Shift left by the index+1
    		 }
     
-		//  Print the 'before' array
-   		 printf("Array before the index: ");
    		 for (int i = 0; i < size_before; i++) {
         	printf("%c", before_arr[i]);
    		 }
-   		 printf("\n");
+   
     
-    	// Print the 'after' array
-    	printf("Array after the index: ");
+    	
     	for (int i = 0; i < size_after; i++) {
         	printf("%c", after_arr[i]);
    		 }
 
-		  printf("\n");
-        printf("before array: %s\n", before_arr);
 		int input1 = atoi(before_arr);
 		int input2 = atoi(after_arr);
 
