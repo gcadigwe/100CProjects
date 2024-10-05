@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
+#define MAX_LEN 100
 
-int find_operator(const char *arr){
-	const char operators[] = "+-/*";
+int find_operator(const char *arr,const char *operators ){
 	for (int i = 0; arr[i] != '\0'; i++) {
 		for (int j = 0; operators[j] != '\0'; j++ ){
 			if(arr[i] == operators[j]) {
@@ -15,6 +15,26 @@ int find_operator(const char *arr){
 	}
 
 	return -1;
+}
+
+int check_appearance(const char *str1, const char *str2, int *indices, int *operator_indexes) {
+    int count = 0;
+
+    // Loop through each character in str2
+    for (int i = 0; i < strlen(str2); i++) {
+        // Check if the current character of str2 exists in str1
+        for (int j = 0; j < strlen(str1); j++) {
+            if (str2[i] == str1[j]) {
+                // If there's a match, store the index from str1 and increase count
+                indices[count] = j;
+				operator_indexes[count] = i;
+				count++;
+                // break; // To avoid counting multiple matches of the same character in str2
+            }
+        }
+    }
+
+    return count; // Return the number of matches found
 }
 
 
@@ -43,6 +63,31 @@ int multiply(int input1, int input2) {
 	printf("%d, %d\n", input1,input2);
 
 	return input1 * input2;
+}
+
+void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+// Function to rearrange the array with the highest index first
+void rearrange_highest_first(int *arr,int *arr2, int n) {
+    int max_index = 0;
+
+    // Find the index of the largest element in the array
+    for (int i = 1; i < n; i++) {
+        if (arr[i] > arr[max_index]) {
+            max_index = i;
+        }
+    }
+
+    // Swap the largest element with the first element
+    if (max_index != 0) {
+        swap(&arr[max_index], &arr[0]);
+		printf("max index %d\n", max_index);
+		swap(&arr2[max_index], &arr2[0]);
+    }
 }
 
 int handle_calculation(char operator, int input1, int input2) {
@@ -101,100 +146,86 @@ int main(int argc, char *argv[]){
     }
 
 	printf("Concatenated string: %s\n", result);
+	const char *operators = "-+*/";
 
-    // Free allocated memory
- 
+	int indices[MAX_LEN]; // To store the indices of matching characters from str1
+	int operator_indexes[MAX_LEN];
+    int match_count;
+	match_count = check_appearance(result,operators, indices, operator_indexes);
 
-	// int n = argc - 1;
+	 printf("Number of matching characters: %d\n", match_count);
+    if (match_count > 0) {
+		
+        printf("Before arranged: ");
+        for (int i = 0; i < match_count; i++) {
+            printf("%d %d \n", indices[i],operator_indexes[i]);
+			//  printf("%d ", operator_indexes[i]);
+        }
+		// rearrange_highest_first(indices, match_count);
+		rearrange_highest_first(operator_indexes,indices, match_count);
+        // printf("\n");
+		 printf("Rearranged indices: ");
+    		for (int i = 0; i < match_count; i++) {
+        		printf("%d %d ", indices[i],operator_indexes[i]);
+				
+   			 }
+    printf("\n");
+    } else {
+        printf("No matching characters found.\n");
+    }
 
-	// if (n <= 0) {
-	// 	 printf("Error: Array size must be a positive integer.\n");
-    //     return 1;
-	// }
-
-	//dynamically allocate memory for 'n' integers using malloc
-	// char **arr = (char **)malloc(n * sizeof(char *));
-	// if (arr == NULL) {
-    //     fprintf(stderr, "Error: Memory allocation failed.\n");
-    //     exit(EXIT_FAILURE);
-    // }
-
-	// for(int i = 0; i < argc - 1 ; i++){
-	// 	printf("args %s\n", argv[i + 1]);
-	// 	if (strcmp(argv[i + 1], " ") == 0) {
-	// 		printf("space found");
-    //     	continue;  // Skip the empty string
-    // 	}
-	// 	arr[i] = (char *)malloc((strlen(argv[i + 1]) + 1) * sizeof(char));
-	// 	 if (arr[i] == NULL) {
-    //         fprintf(stderr, "Error: Memory allocation for argument %d failed.\n", i);
-    //         exit(EXIT_FAILURE);
-    //     }
-	// 	strcpy(arr[i], argv[i + 1]);
-
-	// }
-
-	// char input[4] = "";
-    // for (int i = 0; i < n; i++) {
-    //     strcat(input, arr[i]);
-    // }
-	// printf("%s\n", input);
-
-	int index = find_operator(result);
+	// int index = find_operator(result, operators);
     
-    if (index != -1) {
-		int input_size = strlen(result);
-		int size_before = index;
-		int size_after =  input_size - index - 1;
+    // if (index != -1) {
+	// 	int input_size = strlen(result);
+	// 	int size_before = index;
+	// 	int size_after =  input_size - index - 1;
 
-		char* before_arr = (char *) malloc(size_before * sizeof(char)); 
+	// 	char* before_arr = (char *) malloc(size_before * sizeof(char)); 
 
-		char* after_arr = (char *)malloc(size_after * sizeof(char));
+	// 	char* after_arr = (char *)malloc(size_after * sizeof(char));
 
-		// before_arr[0] = '\0';
-		 // Copy elements before the index
-   		 for (int i = 0; i < size_before; i++) {
-			printf("before %c\n", result[i] );
-			// strcpy(before_arr[i], result);
-        	before_arr[i] = result[i];
-			before_arr[i + 1] = '\0';
+	// 	// before_arr[0] = '\0';
+	// 	 // Copy elements before the index
+   	// 	 for (int i = 0; i < size_before; i++) {
+	// 		printf("before %c\n", result[i] );
+	// 		// strcpy(before_arr[i], result);
+    //     	before_arr[i] = result[i];
+	// 		before_arr[i + 1] = '\0';
 
-   		 }
+   	// 	 }
     
-   		 // Copy elements after the index
-    	for (int i = index + 1; i < input_size; i++) {
-       		 after_arr[i - index - 1] = result[i];
-			 after_arr[i - index - 1 + 1] = '\0';  // Shift left by the index+1
-   		 }
+   	// 	 // Copy elements after the index
+    // 	for (int i = index + 1; i < input_size; i++) {
+    //    		 after_arr[i - index - 1] = result[i];
+	// 		 after_arr[i - index - 1 + 1] = '\0';  // Shift left by the index+1
+   	// 	 }
     
-   		 for (int i = 0; i < size_before; i++) {
-        	printf("%c", before_arr[i]);
-   		 }
+   	// 	 for (int i = 0; i < size_before; i++) {
+    //     	printf("%c", before_arr[i]);
+   	// 	 }
    
     
     	
-    	for (int i = 0; i < size_after; i++) {
-        	printf("%c", after_arr[i]);
-   		 }
+    // 	for (int i = 0; i < size_after; i++) {
+    //     	printf("%c", after_arr[i]);
+   	// 	 }
 
-		int input1 = atoi(before_arr);
-		int input2 = atoi(after_arr);
+	// 	int input1 = atoi(before_arr);
+	// 	int input2 = atoi(after_arr);
 
-		int calc_result = handle_calculation(result[index], input1 ,input2);
-		printf("Result: %d\n", calc_result);
-		free(before_arr);
-		free(after_arr);
-    } else {
-        printf("No operator found in the input.\n");
-    }
+	// 	int calc_result = handle_calculation(result[index], input1 ,input2);
+	// 	printf("Result: %d\n", calc_result);
+	// 	free(before_arr);
+	// 	free(after_arr);
+    // } else {
+    //     printf("No operator found in the input.\n");
+    // }
 
-	// printf("Array elements: ")
-//    for (int i = 0; i < n; i++) {
-//         free(arr[i]); // Free each string
-//     }
-// 	// free(arr);
+
 	   free(result);
-	// free(input2);
 
 	return 0;
 }
+
+
